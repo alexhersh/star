@@ -15,15 +15,15 @@ star-collect:
 	cp target/debug/star-collect ./collect
 
 probe-image: star-probe 
-	docker build -t caseydavenport/probe ./probe
+	docker build -t alexhersh/probe ./probe
 
 collect-image: star-collect
-	docker build -t caseydavenport/collect ./collect
+	docker build -t alexhersh/collect ./collect
 
 dockerhub: probe-image collect-image
-	docker push caseydavenport/probe
-	docker push caseydavenport/collect
+	docker push alexhersh/probe
+	docker push alexhersh/collect
 
 tar: probe-image collect-image 
-	docker save caseydavenport/probe > probe.tar
-	docker save caseydavenport/collect > collect.tar
+	docker save alexhersh/probe > probe.tar
+	docker save alexhersh/collect > collect.tar

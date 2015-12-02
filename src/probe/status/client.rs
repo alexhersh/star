@@ -2,7 +2,7 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 
 use probe::status::StatusCache;
-use std::time;
+use std::time::Duration;
 
 use hyper::client::Response;
 use hyper::Client;
@@ -22,7 +22,7 @@ pub fn start_client_driver(targets: Vec<String>,
             targets: targets,
             http_probe_ms: http_probe_ms,
             status_cache: status_cache,
-            thread_pool: ThreadPool::new(4),
+            thread_pool: ThreadPool::new(16),
         });
     });
 }
@@ -57,9 +57,8 @@ impl Handler for ClientHandler {
             info!("Probing target: [{}]", target_url);
 
             let mut client = Client::new();
-	    let opt: Option<time::Duration> = Some(time::Duration::from_secs(1));
-            client.set_read_timeout(opt);
-            client.set_write_timeout(opt);
+            client.set_read_timeout(Some(Duration::from_secs(1)));
+            client.set_write_timeout(Some(Duration::from_secs(1)));
 
             let response: Result<Response, Error> =
                 client.get(&target_url)

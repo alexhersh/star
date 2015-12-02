@@ -32,7 +32,7 @@ Options:
     --http-port=<port>              Port to listen on for HTTP requests
                                     [default: 9000].
     --http-probe-seconds=<seconds>  Seconds between probe connection attempts
-                                    [default: 5].
+                                    [default: 1].
     --urls=<urls>                   List of comma-delimited URLs to probe, e.g:
                                     foo.baz.com:80,bar.baz.com:80
     --logfile=<path>                File to log output to instead of stdout.

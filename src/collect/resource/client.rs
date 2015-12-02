@@ -3,6 +3,7 @@ use std::sync::{Arc, RwLock};
 use std::thread;
 
 use collect::resource::{Resource, ResourceStore, Response};
+use std::time::Duration;
 
 use hyper::client::Response as HttpResponse;
 use hyper::Client;
@@ -22,7 +23,7 @@ pub fn start_client_driver(http_request_ms: u64,
         let _ = event_loop.run(&mut ClientHandler {
             http_request_ms: http_request_ms,
             resource_store: resource_store,
-            thread_pool: ThreadPool::new(4),
+            thread_pool: ThreadPool::new(8),
         });
     });
 }
@@ -55,7 +56,9 @@ impl Handler for ClientHandler {
         self.thread_pool.execute(move || {
             info!("Fetching resource: [{}]", &resource.url);
 
-            let client = Client::new();
+            let mut client = Client::new();
+            client.set_read_timeout(Some(Duration::from_secs(1)));
+            client.set_write_timeout(Some(Duration::from_secs(1)));
 
             let response_result: Result<HttpResponse, Error> =
                 client.get(&resource.url)
